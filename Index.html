@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="om">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beekumsa Oromummaa App</title>
+    <style>
+        :root {
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --primary-color: #da251d; 
+            --secondary-color: #555555;
+            --accent-color: #f4edd3;
+            --shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --primary-color: #ff4d4d;
+            --accent-color: #333333;
+            --shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--card-bg);
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            position: relative; /* Gargaarsa setting irratti fiduuf */
+        }
+
+        /* ⚙️ MALLATTOO SETTING XINNOO FI BAKKA FREE TA'E (TOP-RIGHT) */
+        .settings-trigger {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0,0,0,0.05);
+            color: var(--text-color);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px; /* Baay'ee xinnoo gochuuf */
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 100;
+            border: 1px solid #ccc;
+        }
+        [data-theme="dark"] .settings-trigger { background: rgba(255,255,255,0.1); }
+        
+        .settings-panel {
+            position: absolute;
+            top: 45px;
+            right: 15px;
+            background: var(--card-bg);
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            z-index: 99;
+            text-align: left;
+        }
+
+        h1.app-title {
+            font-size: 32px;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .about-app {
+            background: var(--accent-color);
+            color: #333;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+            font-style: italic;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        input[type="text"], input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            background: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            margin: 10px 5px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover { opacity: 0.9; }
+
+        .btn-skip { background-color: #f39c12; }
+        .btn-secondary { background-color: var(--secondary-color); }
+        .btn-home { background-color: #2980b9; }
+
+        #timer {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 15px 0;
+            background: rgba(218, 37, 29, 0.1);
+            padding: 5px 15px;
+            display: inline-block;
+            border-radius: 20px;
+        }
+
+        .options-container {
+            margin: 25px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background-color: var(--accent-color);
+            color: var(--text-color);
+            text-align: left;
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .option-btn:hover { background-color: var(--primary-color); color: white; }
+
+        /* Certificate Design */
+        .certificate-box {
+            background: #fff;
+            color: #000;
+            border: 10px double #da251d;
+            padding: 30px;
+            margin-top: 20px;
+            border-radius: 10px;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+        }
+        .cert-user-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #000;
+            margin: 15px 0;
+        }
+
+        .dev-footer { margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px; }
+        .social-links { margin-top: 10px; display: flex; justify-content: center; gap: 15px; }
+        .social-icon { text-decoration: none; color: white; padding: 6px 15px; border-radius: 15px; font-size: 13px; font-weight: bold; }
+        .fb { background-color: #1877f2; }
+        .wa { background-color: #25D366; }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- SETTINGS (KARA OL-GURAABAA MIRGAA - TOP RIGHT) -->
+        <div class="settings-trigger" onclick="toggleSettingsPanel()">⚙️ Settings</div>
+        <div id="settings-panel" class="settings-panel hidden">
+            <h5 style="margin-bottom: 5px; font-size:12px;">Theme:</h5>
+            <button onclick="changeTheme('light')" style="padding: 3px 8px; font-size: 11px;">☀️ Light</button>
+            <button onclick="changeTheme('dark')" class="btn-secondary" style="padding: 3px 8px; font-size: 11px;">🌙 Dark</button>
+        </div>
+        
+        <!-- 1. FUULA JALQABAA (WELCOME SCREEN) -->
+        <div id="welcome-screen">
+            <h1 class="app-title">Oromummaa App</h1>
+            
+            <div class="about-app">
+                "App kun fayyadamtoota afaan oromootiif kan qophaa'edha namni akka aadaa, afaan, eenyummaa isaa hubaatuuf kan hojjetameedha."
+            </div>
+
+            <p style="font-weight: bold; margin-bottom: 5px;">Maaloo maqaa kee galchuun seeni!</p>
+            <input type="text" id="username" placeholder="Maqaa kee asitti barreessi...">
+            
+            <p style="font-weight: bold; margin-top: 10px; margin-bottom: 5px;">Suuraa kee filadhi (Profile):</p>
+            <input type="file" id="user-image" accept="image/*">
+            <br>
+            
+            <button onclick="startApp()" id="start-btn">Seenuu / Galmaahi</button>
+            
+            <div class="dev-footer">
+                <p style="font-size:14px; font-weight:bold;">Developer: Bona Melkamu</p>
+                <div class="social-links">
+                    <a href="https://www.facebook.com/facebook.combonamalkamuabeba" target="_blank" class="social-icon fb">Facebook</a>
+                    <a href="https://wa.me/251910909617" target="_blank" class="social-icon wa">WhatsApp</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. FUULA GAAFFIIWWANII (QUIZ SCREEN) -->
+        <div id="quiz-screen" class="hidden">
+            <div style="font-size: 15px; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; padding-right: 60px;">
+                <img id="nav-avatar" src="" style="width: 35px; height: 35px; border-radius: 50%; display: none; object-fit: cover;">
+                <span>Taphataa: <span id="player-name" style="color:var(--primary-color);"></span></span> | 
+                <span>Gaaffii: <span id="q-num">1</span>/100</span>
+            </div>
+            
+            <div id="timer">Sekondii: 30</div>
+            <h2 id="question-text" style="font-size: 20px; margin: 15px 0;">Gaaffii...</h2>
+            <div class="options-container" id="options-box"></div>
+
+            <div style="display: flex; justify-content: space-between; margin-top: 15px; flex-wrap: wrap; gap: 5px;">
+                <button onclick="prevQuestion()" id="prev-btn" class="btn-secondary">◄ Duubatti</button>
+                <button onclick="goToHome()" class="btn-home">🏠 Jalqabatti</button>
+                <button onclick="skipQuestion()" class="btn-skip">Skip ↷</button>
+                <button onclick="nextQuestion()" id="next-btn">Fullee ►</button>
+            </div>
+        </div>
+
+        <!-- 3. FUULA QABXII DHUMAA & CERTIFICATE -->
+        <div id="result-screen" class="hidden">
+            <h1 style="color: var(--primary-color);">Xumurtaniittu! 🎉</h1>
+            <p style="font-size: 18px; margin: 10px 0;">Baga gammadde, qabxiin kee walitti qabamee:</p>
+            <h2 id="final-score" style="font-size: 32px; color: green; margin-bottom: 15px;">0 / 100</h2>
+            
+            <div id="certificate" class="certificate-box">
+                <h2 style="color: #b8860b; font-family: 'Georgia', serif;">WARAQAA RAGAA</h2>
+                <p style="font-size: 14px; font-weight: bold; letter-spacing: 2px;">BEEKUMSA OROMUMMAA</p>
+                <img id="cert-img" class="cert-user-img" src="" alt="Profile">
+                <p style="font-size: 16px; margin: 10px 0;">Waraqaan Ragaa kun kan kennameef:</p>
+                <h3 id="cert-name" style="font-size: 24px; text-decoration: underline; color: #333;">Maqaa Taphataa</h3>
+                <p style="margin: 15px 10px; font-size: 14px; line-height: 1.4;">
+                    Gaaffiiwwan Beekumsa Oromummaa, Aadaa, Seenaa fi Seera Gadaa qorannoo dhiyaate milkiidhaan xumuruu isaaniitiif ragaan kun kennameefera.
+                </p>
+                <div style="display: flex; justify-content: space-between; margin-top: 25px; font-size: 12px; font-weight: bold;">
+                    <div>Qabxii: <span id="cert-score">0%</span></div>
+                    <div style="text-align: right;">Developer: Bona Melkamu<br><small>Oromummaa App</small></div>
+                </div>
+            </div>
+
+            <br>
+            <button onclick="window.print()" class="btn-secondary">🖨️ Print / Download</button>
+            <button onclick="resetAndRestart()">Irra Deebi'i Taphadhu</button>
+        </div>
+
+    </div>
+
+    <script>
+        const gaaffiiwwan = [
+            { q: "Mootummaan Gadaa waggaa meeqaan deebi'ee lallabama?", a: ["Waggaa 5", "Waggaa 8", "Waggaa 10", "Waggaa 4"], c: 1 },
+            { q: "Siiqqeen eenyuun tajaajila?", a: ["Abaarsaaf", "Dubartoota qofaaf", "Dhiiraaf", "Jaarsolii biyyaaf"], c: 1 },
+            { q: "Odaawwan Oromiyaa keessaa Odaan kuusaa seeraa ta'e kami?", a: ["Odaam Bulluq", "Oda Nabee", "Oda Bisil", "Oda Rooba"], c: 1 },
+            { q: "Abbaan Gadaa erga baallii kenneen booda maal jedhama?", a: ["Yuuba", "Hayyuu", "Raba", "Kuusa"], c: 0 },
+            { q: "Faaruun loonii maal jedhama?", a: ["Moo'aa", "Sirba", "Geerarsa", "Weeduu"], c: 3 }
+        ];
+
+        while(gaaffiiwwan.length < 100) {
+            gaaffiiwwan.push({
+                q: "Gaaffii Beekumsa Oromummaa dabalataa (Lakk. " + (gaaffiiwwan.length + 1) + ")",
+                a: ["Deebii A", "Deebii B (Sirrii)", "Deebii C", "Deebii D"],
+                c: 1
+            });
+        }
+
+        let currentIdx = 0, score = 0, timeLeft = 30, countdownTimer, hasStarted = false, userImgData = "";
+
+        document.getElementById('user-image').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) { userImgData = event.target.result; };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function startApp() {
+            const nameInput = document.getElementById("username").value.trim();
+            if(nameInput === "") {
+                alert("Maaloo, dura maqaa keessan galchaa!");
+                return;
+            }
+            document.getElementById("player-name").innerText = nameInput;
+            if(userImgData) {
+                const avatar = document.getElementById("nav-avatar");
+                avatar.src = userImgData; avatar.style.display = "inline-block";
+            }
+            document.getElementById("welcome-screen").classList.add("hidden");
+            document.getElementById("quiz-screen").classList.remove("hidden");
+            if(!hasStarted) { hasStarted = true; loadQuestion(); } else { startTimer(); }
+        }
+
+        function goToHome() {
+            clearInterval(countdownTimer);
+            document.getElementById("quiz-screen").classList.add("hidden");
+            document.getElementById("welcome-screen").classList.remove("hidden");
+            document.getElementById("start-btn").innerText = "Itti Fufi ►";
+        }
+
+        function startTimer() {
+            clearInterval(countdownTimer);
+            document.getElementById("timer").innerText = "Sekondii: " + timeLeft;
+            countdownTimer = setInterval(() => {
+                timeLeft--;
+                document.getElementById("timer").innerText = "Sekondii: " + timeLeft;
+                if(timeLeft <= 0) {
+                    clearInterval(countdownTimer);
+                    speakText("Yeroon sitti dhumate!");
+                    nextQuestion();
+                }
+            }, 1000);
+        }
+
+        function loadQuestion() {
+            if(currentIdx >= gaaffiiwwan.length) { endQuiz(); return; }
+            timeLeft = 30; startTimer();
+            document.getElementById("q-num").innerText = currentIdx + 1;
+            let activeQ = gaaffiiwwan[currentIdx];
+            document.getElementById("question-text").innerText = activeQ.q;
+            const box = document.getElementById("options-box"); box.innerHTML = "";
+            activeQ.a.forEach((opt, idx) => {
+                const b = document.createElement("button");
+                b.className = "option-btn"; b.innerText = opt;
+                b.onclick = () => checkAnswer(idx); box.appendChild(b);
+            });
+            document.getElementById("prev-btn").disabled = currentIdx === 0;
+        }
+
+        function checkAnswer(selected) {
+            clearInterval(countdownTimer);
+            if(selected === gaaffiiwwan[currentIdx].c) { score++; speakText("Baay'ee namatti tola, sirriidha!"); } 
+            else { speakText("Dogoggora, jabadhu!"); }
+            setTimeout(() => { nextQuestion(); }, 1000);
+        }
+
+        function skipQuestion() { clearInterval(countdownTimer); speakText("Darbiteetta."); nextQuestion(); }
+        function nextQuestion() { if(currentIdx < gaaffiiwwan.length - 1) { currentIdx++; loadQuestion(); } else { endQuiz(); } }
+        function prevQuestion() { if(currentIdx > 0) { currentIdx--; loadQuestion(); } }
+
+        function endQuiz() {
+            clearInterval(countdownTimer);
+            document.getElementById("quiz-screen").classList.add("hidden");
+            document.getElementById("result-screen").classList.remove("hidden");
+            document.getElementById("final-score").innerText = score + " / " + gaaffiiwwan.length;
+            document.getElementById("cert-name").innerText = document.getElementById("username").value;
+            let percent = Math.round((score / gaaffiiwwan.length) * 100);
+            document.getElementById("cert-score").innerText = percent + "%";
+            document.getElementById("cert-img").src = userImgData ? userImgData : "https://via.placeholder.com/100";
+            speakText("Baga gammaddan, xumurtaniittu!");
+        }
+
+        function resetAndRestart() {
+            score = 0; currentIdx = 0; hasStarted = false;
+            document.getElementById("start-btn").innerText = "Seenuu / Galmaahi";
+            document.getElementById("result-screen").classList.add("hidden");
+            document.getElementById("welcome-screen").classList.remove("hidden");
+        }
+
+        function speakText(msg) {
+            if ('speechSynthesis' in window) {
+                let speech = new SpeechSynthesisUtterance(msg);
+                speech.lang = 'en-US'; speech.rate = 1.1; window.speechSynthesis.speak(speech);
+            }
+        }
+
+        function toggleSettingsPanel() { document.getElementById("settings-panel").classList.toggle("hidden"); }
+        function changeTheme(mode) {
+            if(mode === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+            else document.documentElement.removeAttribute('data-theme');
+        }
+    </script>
+</body>
+</html>
